@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  web:
+    build: ./docker/web
+    ports:
+    - 80:80
+    volumes:
+    - ./:/var/www/html
+    depends_on:
+    - mysql
+
+  mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: pw
+    ports:
+    - 3306:3306
+    volumes:
+    - mysql-db:/var/lib/mysql
+
+  phpmyadmin: 
+    image: phpmyadmin/phpmyadmin:latest
+    environment: 
+      - PMA_ARBITRARY=1
+      - PMA_HOSTS=mysql
+      - PMA_USER=user
+      - PMA_PASSWORD=pw
+    ports: 
+      - 8888:80
+    depends_on: 
+      - mysql
+
+
+volumes:
+  mysql-db:
